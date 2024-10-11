@@ -34,6 +34,7 @@ header h1 {
     text-align: center;
     color: #007bff;
     animation: fadeIn 1s ease;
+    margin-bottom: 20px;
 }
 
 /* Fade-in Animation */
