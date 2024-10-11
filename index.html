@@ -10,16 +10,24 @@
     <div class="file-manager">
         <header>
             <h1>File Manager</h1>
-            <input type="text" id="search" placeholder="Search files and folders..." oninput="searchFiles()">
         </header>
+        <input type="text" id="searchBar" placeholder="🔍 Search..." oninput="searchItems()" />
         <div class="actions">
-            <button onclick="createFile()">New File</button>
-            <button onclick="createFolder()">New Folder</button>
-            <button onclick="deleteFile()">Delete Last Item</button>
+            <button onclick="createFolder()">📁 Create Folder</button>
+            <button onclick="createFile()">📄 Create File</button>
+            <button onclick="sortItems('name')">🔠 Sort by Name</button>
+            <button onclick="sortItems('type')">🗂️ Sort by Type</button>
+            <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
         </div>
-        <div class="files" id="fileList">
-            <!-- Files and folders will be listed here -->
+        <div class="files" id="fileList"></div>
+        <div class="file-preview" id="filePreview" style="display: none;">
+            <h3>Preview</h3>
+            <button id="closePreview">✖ Close</button>
+            <input id="fileNameInput" type="text" placeholder="Edit file name..." />
+            <textarea id="previewContent" rows="5" placeholder="Edit content here...">Select a file to see its content here.</textarea>
+            <button id="saveContent">💾 Save</button>
         </div>
+        
     </div>
     <script src="script.js"></script>
 </body>

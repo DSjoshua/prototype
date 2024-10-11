@@ -1,70 +1,110 @@
 const fileList = document.getElementById('fileList');
+const filePreview = document.getElementById('filePreview');
+const previewContent = document.getElementById('previewContent');
+const closePreviewButton = document.getElementById('closePreview'); // Close button
+const saveContentButton = document.getElementById('saveContent'); // Save button
+const fileNameInput = document.getElementById('fileNameInput'); // Input for editing file name
 
-function createFile() {
-    const fileName = prompt('Enter file name:');
-    if (fileName) {
-        addItem(fileName, 'file');
-    }
-}
+let files = []; // Array to store files and folders
+let currentFileIndex = null; // Variable to keep track of the currently selected file index
 
 function createFolder() {
-    const folderName = prompt('Enter folder name:');
+    const folderName = prompt("Enter folder name:");
     if (folderName) {
-        addItem(folderName, 'folder');
+        files.push({ name: folderName, type: 'folder' });
+        renderFiles();
     }
 }
 
-function addItem(name, type) {
-    const itemDiv = document.createElement('div');
-    itemDiv.className = type;
-    itemDiv.draggable = true;
-    itemDiv.innerHTML = `
-        <span>${type === 'folder' ? '📁' : '📄'} ${name}</span>
-        <button onclick="deleteSingleItem(this)">Delete</button>
-    `;
-    itemDiv.addEventListener('dragstart', dragStart);
-    itemDiv.addEventListener('dragover', dragOver);
-    itemDiv.addEventListener('drop', dropItem);
-    fileList.appendChild(itemDiv);
-}
-
-function deleteFile() {
-    const items = fileList.children;
-    if (items.length > 0) {
-        fileList.removeChild(items[items.length - 1]);
-    } else {
-        alert('No items to delete!');
+function createFile() {
+    const fileName = prompt("Enter file name:");
+    if (fileName) {
+        files.push({ name: fileName, type: 'file', content: '' }); // Initialize with empty content
+        renderFiles();
     }
 }
 
-function deleteSingleItem(button) {
-    const item = button.parentNode;
-    fileList.removeChild(item);
-}
-
-function searchFiles() {
-    const query = document.getElementById('search').value.toLowerCase();
-    const items = fileList.getElementsByClassName('file');
-    const folders = fileList.getElementsByClassName('folder');
-
-    Array.from([...items, ...folders]).forEach(item => {
-        const text = item.textContent.toLowerCase();
-        item.style.display = text.includes(query) ? 'flex' : 'none';
+function renderFiles() {
+    fileList.innerHTML = ''; // Clear existing files
+    files.forEach((file, index) => {
+        const fileDiv = document.createElement('div');
+        fileDiv.className = file.type;
+        fileDiv.innerHTML = file.name;
+        fileDiv.onclick = () => previewFile(index); // Preview on click
+        fileList.appendChild(fileDiv);
     });
 }
 
-function dragStart(event) {
-    event.dataTransfer.setData('text/plain', event.target.innerHTML);
-    event.target.style.opacity = '0.5';
+function previewFile(index) {
+    const selectedFile = files[index];
+    currentFileIndex = index; // Store the current file index
+
+    // Display content based on file type
+    if (selectedFile.type === 'file') {
+        previewContent.value = selectedFile.content || ''; // Use existing content if available
+        fileNameInput.value = selectedFile.name; // Set input for file name
+    } else {
+        previewContent.value = `This is a folder: ${selectedFile.name}`;
+    }
+
+    filePreview.style.display = 'block'; // Show the file preview
 }
 
-function dragOver(event) {
-    event.preventDefault();
+function closePreview() {
+    filePreview.style.display = 'none'; // Hide the preview
+    previewContent.value = ''; // Reset content
+    fileNameInput.value = ''; // Reset file name input
 }
 
-function dropItem(event) {
-    event.preventDefault();
-    event.target.style.opacity = '1';
-    const draggedHTML = event.dataTransfer.getData('text/plain');
-    event.target.innerHTML = draggedHTML;
+function saveContent() {
+    if (currentFileIndex !== null) { // Check if a file is currently selected
+        // Save the edited content directly to the current file
+        files[currentFileIndex].content = previewContent.value; // Save the edited content
+        
+        // Update the file name if changed
+        const newFileName = fileNameInput.value.trim();
+        if (newFileName) {
+            files[currentFileIndex].name = newFileName; // Update file name
+        }
+        
+        alert('Content saved!'); // Notify user
+        renderFiles(); // Re-render files to reflect changes
+    } else {
+        alert('Error: No file selected!');
+    }
 }
+
+function toggleDarkMode() {
+    document.body.classList.toggle('dark-mode');
+}
+
+function searchItems() {
+    const searchQuery = document.getElementById('searchBar').value.toLowerCase();
+    const filteredFiles = files.filter(file => file.name.toLowerCase().includes(searchQuery));
+    renderFilteredFiles(filteredFiles); // Render filtered files
+}
+
+function renderFilteredFiles(filteredFiles) {
+    fileList.innerHTML = ''; // Clear existing files
+    filteredFiles.forEach((file, index) => {
+        const fileDiv = document.createElement('div');
+        fileDiv.className = file.type;
+        fileDiv.innerHTML = file.name;
+        fileDiv.onclick = () => previewFile(files.indexOf(file)); // Reference original array for preview
+        fileList.appendChild(fileDiv);
+    });
+}
+
+// Sample sort function (sort by name or type)
+function sortItems(type) {
+    if (type === 'name') {
+        files.sort((a, b) => a.name.localeCompare(b.name));
+    } else if (type === 'type') {
+        files.sort((a, b) => a.type.localeCompare(b.type));
+    }
+    renderFiles();
+}
+
+// Event listeners for close and save buttons
+closePreviewButton.onclick = closePreview;
+saveContentButton.onclick = saveContent;
