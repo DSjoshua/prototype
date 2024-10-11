@@ -20,6 +20,22 @@
             <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
         </div>
         <div class="files" id="fileList"></div>
+        
+        <!-- New table to display files inside the currently opened folder -->
+        <div id="folderContents" style="display: none;">
+            <h3>Files in Folder</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>File Name</th>
+                        <th>File Type</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="fileTableBody"></tbody>
+            </table>
+        </div>
+        
         <div id="filePreview" style="display:none;" class="file-preview-container">
             <h3>Preview</h3>
             <button id="closePreview" class="button close">✖ Close</button>
@@ -32,15 +48,61 @@
                 <button id="saveContent" class="button save">💾 Save</button>
                 <button id="deleteFile" class="button delete">🗑️ Delete</button>
             </div>
+        
+            <!-- Table for displaying folder contents -->
+            <div id="folderContents" style="display:none;">
+                <h4>Folder Contents</h4>
+                <table id="fileTable">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <td>
+                                <button onclick="editRow(this)">Edit</button>
+                                <button onclick="deleteRow(this)">Delete</button>
+                            </td>
+                            
+                        </tr>
+                    </thead>
+                    <tbody id="fileTableBody">
+                        <!-- Folder contents will be populated here -->
+                    </tbody>
+                </table>
+            </div>
         </div>
         
+        </div>
 
-     <!-- Footer Section -->
-     <footer>
-        <p>&copy; 2024 File Manager. All rights reserved.</p>
-        <p>Developed by Ivan Quiambao</p>
-    </footer>
+        <!-- Footer Section -->
+        <footer>
+            <p>&copy; 2024 File Manager. All rights reserved.</p>
+            <p>Developed by Ivan Quiambao</p>
+        </footer>
+    </div>
 
     <script src="script.js"></script>
 </body>
 </html>
+
+
+<script>
+    // Function to edit a row
+    function editRow(btn) {
+        let row = btn.closest('tr'); // Get the closest row to the clicked button
+        let nameCell = row.cells[0]; // Access the first cell (File Name)
+        let typeCell = row.cells[1]; // Access the second cell (File Type)
+        
+        // Prompt the user to input new values
+        let newName = prompt("Enter new file name:", nameCell.innerText);
+        let newType = prompt("Enter new file type:", typeCell.innerText);
+        
+        if (newName !== null && newName !== "") nameCell.innerText = newName;
+        if (newType !== null && newType !== "") typeCell.innerText = newType;
+    }
+
+    // Function to delete a row
+    function deleteRow(btn) {
+        let row = btn.closest('tr'); // Get the closest row to the clicked button
+        row.remove(); // Remove the row
+    }
+</script>
