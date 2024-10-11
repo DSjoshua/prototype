@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enhanced File Manager</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="file-manager">
+        <header>
+            <h1>File Manager</h1>
+            <input type="text" id="search" placeholder="Search files and folders..." oninput="searchFiles()">
+        </header>
+        <div class="actions">
+            <button onclick="createFile()">New File</button>
+            <button onclick="createFolder()">New Folder</button>
+            <button onclick="deleteFile()">Delete Last Item</button>
+        </div>
+        <div class="files" id="fileList">
+            <!-- Files and folders will be listed here -->
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
