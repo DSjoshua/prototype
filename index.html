@@ -20,14 +20,20 @@
             <button onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
         </div>
         <div class="files" id="fileList"></div>
-        <div class="file-preview" id="filePreview" style="display: none;">
+        <div id="filePreview" style="display:none;" class="file-preview-container">
             <h3>Preview</h3>
-            <button id="closePreview">✖ Close</button>
-            <input id="fileNameInput" type="text" placeholder="Edit file name..." />
-            <textarea id="previewContent" rows="5" placeholder="Edit content here...">Select a file to see its content here.</textarea>
-            <button id="saveContent">💾 Save</button>
+            <button id="closePreview" class="button close">✖ Close</button>
+            
+            <input id="fileNameInput" type="text" placeholder="Edit file name..." class="input" />
+            
+            <textarea id="previewContent" rows="5" placeholder="Edit content here..." class="textarea">Select a file to see its content here.</textarea>
+            
+            <div class="button-group">
+                <button id="saveContent" class="button save">💾 Save</button>
+                <button id="deleteFile" class="button delete">🗑️ Delete</button>
+            </div>
         </div>
-    </div>
+        
 
      <!-- Footer Section -->
      <footer>

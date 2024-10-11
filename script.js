@@ -3,15 +3,18 @@ const filePreview = document.getElementById('filePreview');
 const previewContent = document.getElementById('previewContent');
 const closePreviewButton = document.getElementById('closePreview'); // Close button
 const saveContentButton = document.getElementById('saveContent'); // Save button
+const deleteFileButton = document.getElementById('deleteFile'); // Delete button
 const fileNameInput = document.getElementById('fileNameInput'); // Input for editing file name
+const searchBar = document.getElementById('searchBar'); // Search bar for filtering files
 
-let files = []; // Array to store files and folders
+let files = JSON.parse(localStorage.getItem('files')) || []; // Load files from localStorage
 let currentFileIndex = null; // Variable to keep track of the currently selected file index
 
 function createFolder() {
     const folderName = prompt("Enter folder name:");
     if (folderName) {
         files.push({ name: folderName, type: 'folder' });
+        saveFiles(); // Save to localStorage
         renderFiles();
     }
 }
@@ -20,6 +23,7 @@ function createFile() {
     const fileName = prompt("Enter file name:");
     if (fileName) {
         files.push({ name: fileName, type: 'file', content: '' }); // Initialize with empty content
+        saveFiles(); // Save to localStorage
         renderFiles();
     }
 }
@@ -68,10 +72,32 @@ function saveContent() {
         }
         
         alert('Content saved!'); // Notify user
+        saveFiles(); // Save to localStorage
         renderFiles(); // Re-render files to reflect changes
     } else {
         alert('Error: No file selected!');
     }
+}
+
+// Delete the selected file or folder
+function deleteFile() {
+    if (currentFileIndex !== null) {
+        const confirmation = confirm("Are you sure you want to delete this file/folder?");
+        if (confirmation) {
+            files.splice(currentFileIndex, 1); // Remove the file/folder from the array
+            saveFiles(); // Save to localStorage
+            closePreview(); // Close the preview
+            renderFiles(); // Re-render files to reflect changes
+            alert('File/Folder deleted successfully!'); // Notify user
+        }
+    } else {
+        alert('Error: No file selected to delete!');
+    }
+}
+
+// Save files to localStorage
+function saveFiles() {
+    localStorage.setItem('files', JSON.stringify(files));
 }
 
 function toggleDarkMode() {
@@ -79,7 +105,7 @@ function toggleDarkMode() {
 }
 
 function searchItems() {
-    const searchQuery = document.getElementById('searchBar').value.toLowerCase();
+    const searchQuery = searchBar.value.toLowerCase();
     const filteredFiles = files.filter(file => file.name.toLowerCase().includes(searchQuery));
     renderFilteredFiles(filteredFiles); // Render filtered files
 }
@@ -102,9 +128,14 @@ function sortItems(type) {
     } else if (type === 'type') {
         files.sort((a, b) => a.type.localeCompare(b.type));
     }
+    saveFiles(); // Save to localStorage after sorting
     renderFiles();
 }
 
-// Event listeners for close and save buttons
+// Event listeners for close, save, and delete buttons
 closePreviewButton.onclick = closePreview;
 saveContentButton.onclick = saveContent;
+deleteFileButton.onclick = deleteFile; // Add event listener for delete button
+
+// Load files on page load
+document.addEventListener('DOMContentLoaded', renderFiles);
